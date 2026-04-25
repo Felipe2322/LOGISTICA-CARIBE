@@ -48,12 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setWa('footerWa', cotizarMsg);
   setWa('stickyWa', cotizarMsg);
 
-  const chatCotizar  = document.querySelector('.chat-opt-cotizar');
-  const chatEstado   = document.querySelector('.chat-opt-estado');
-  const chatPregunta = document.querySelector('.chat-opt-pregunta');
-  if (chatCotizar)  { chatCotizar.href  = _waMsg(cotizarMsg);  chatCotizar.target  = '_blank'; chatCotizar.rel  = 'noopener noreferrer'; }
-  if (chatEstado)   { chatEstado.href   = _waMsg(estadoMsg);   chatEstado.target   = '_blank'; chatEstado.rel   = 'noopener noreferrer'; }
-  if (chatPregunta) { chatPregunta.href = _waMsg(preguntaMsg); chatPregunta.target = '_blank'; chatPregunta.rel = 'noopener noreferrer'; }
+  // WA links del chat se inyectan en runtime via sendMessage/addMessage
 
   // --- INYECTAR EMAIL EN RUNTIME ---
   const email  = _e();
@@ -84,7 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- CHAT TOGGLE ---
   document.getElementById('chatToggle')?.addEventListener('click', toggleChat);
-  document.querySelectorAll('.chat-close').forEach(b => b.addEventListener('click', toggleChat));
+  document.getElementById('chatClose')?.addEventListener('click', toggleChat);
+
+  // --- CHAT INPUT ---
+  const chatInput = document.getElementById('chatInput');
+  const chatSend  = document.getElementById('chatSend');
+
+  chatSend?.addEventListener('click', () => sendMessage(chatInput.value));
+  chatInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendMessage(chatInput.value);
+  });
+
+  // --- CHAT SUGGESTIONS ---
+  document.getElementById('chatSuggestions')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-msg]');
+    if (btn) sendMessage(btn.dataset.msg);
+  });
 
   // --- EXIT POPUP ---
   document.getElementById('btnCloseExit')?.addEventListener('click', closeExit);
@@ -258,11 +268,167 @@ function toggleFaq(btn) {
   if (!isOpen) { btn.classList.add('open'); btn.nextElementSibling.classList.add('open'); }
 }
 
-// ===== CHAT =====
+// ===== CHATBOT =====
+const BOT_RESPONSES = [
+  {
+    keys: ['precio','costo','cuesta','tarifa','cobran','cuanto','cuánto','rate','flete'],
+    reply: `💰 Nuestras tarifas orientativas son:\n\n• Furgoneta (hasta 1 ton): desde <strong>RD$2,500</strong>\n• Camión mediano (hasta 5 ton): desde <strong>RD$6,500</strong>\n• Camión grande (hasta 15 ton): desde <strong>RD$12,000</strong>\n• Tráiler (hasta 30 ton): desde <strong>RD$22,000</strong>\n\nEl precio exacto depende de la distancia y tipo de carga. ¿Quieres una <a href="#quoteCard">cotización gratis</a>?`
+  },
+  {
+    keys: ['servicio','ofrecen','hacen','tipos','que mueven','qué mueven','opciones'],
+    reply: `📦 Ofrecemos 6 servicios:\n\n1. <strong>Carga General</strong> — mercancías y paquetes\n2. <strong>Carga Industrial</strong> — maquinaria pesada\n3. <strong>Mudanzas</strong> — residencial y comercial\n4. <strong>Refrigerada</strong> — cadena de frío\n5. <strong>Express</strong> — entregas urgentes\n6. <strong>Almacenamiento</strong> — bodegaje seguro\n\n¿Cuál necesitas?`
+  },
+  {
+    keys: ['cotiz','presupuesto','solicitar','pedir','quote'],
+    reply: `📋 Cotizar es muy fácil y gratis:\n\n1. Llena el formulario arriba (30 segundos)\n2. Te respondemos en <strong>menos de 2 horas</strong>\n3. Sin compromiso\n\n👉 <a href="#quoteCard">Ir al formulario de cotización</a>`
+  },
+  {
+    keys: ['ubicad','donde','dirección','dirección','santiago','lugar','oficina','están'],
+    reply: `📍 Estamos en <strong>Santiago de los Caballeros</strong>, República Dominicana.\n\nOperamos en todo el territorio nacional: Santo Domingo, La Vega, Puerto Plata, San Francisco de Macorís y más.\n\n¿Necesitas que vayamos a tu dirección?`
+  },
+  {
+    keys: ['horario','hora','atienden','abierto','disponible','cuando','cuándo'],
+    reply: `🕐 Nuestro horario de atención es:\n\n• <strong>Lunes a Sábado: 7am – 8pm</strong>\n• Servicio de transporte: <strong>24/7</strong>\n\nPuedes escribirnos por WhatsApp en cualquier momento y te respondemos.`
+  },
+  {
+    keys: ['seguro','asegurad','garantia','garantía','daño','daños','pierde','perdida'],
+    reply: `🛡️ Sí, <strong>toda la carga está asegurada</strong> durante el transporte.\n\nEn caso de cualquier incidente, respondemos por el valor de tu mercancía. Trabajamos con total transparencia y responsabilidad.`
+  },
+  {
+    keys: ['gps','rastrear','rastreo','seguimiento','tracking','donde esta','dónde está'],
+    reply: `📡 Toda nuestra flota tiene <strong>GPS en tiempo real</strong>.\n\nDurante el trayecto te enviamos actualizaciones por WhatsApp para que sepas exactamente dónde está tu carga.`
+  },
+  {
+    keys: ['whatsapp','llamar','contacto','telefono','teléfono','comunicar','hablar'],
+    reply: `📞 Puedes contactarnos por:\n\n• <strong>WhatsApp:</strong> 809-000-0000\n• <strong>Teléfono:</strong> 809-000-0000\n• <strong>Email:</strong> info@logisticadelcaribe.com\n\n¿Prefieres que te contactemos nosotros?`
+  },
+  {
+    keys: ['mudanza','mudar','muebles','casa','oficina','residencial'],
+    reply: `🏠 Nuestro servicio de <strong>mudanzas</strong> incluye:\n\n• Personal capacitado para embalaje\n• Transporte cuidadoso de muebles y equipos\n• Mudanzas residenciales y comerciales\n• Disponible en todo el país\n\n¿Quieres una <a href="#quoteCard">cotización para tu mudanza</a>?`
+  },
+  {
+    keys: ['refriger','frio','frío','alimento','medicamento','cadena'],
+    reply: `❄️ Sí, tenemos servicio de <strong>carga refrigerada</strong>.\n\nTransportamos alimentos, medicamentos y cualquier producto que requiera cadena de frío, manteniendo la temperatura requerida durante todo el trayecto.`
+  },
+  {
+    keys: ['tiempo','demora','cuanto tarda','cuánto tarda','rapido','rápido','entrega'],
+    reply: `⏱️ Los tiempos de entrega dependen de la ruta:\n\n• <strong>Santiago → Santo Domingo:</strong> 2-3 horas\n• <strong>Rutas locales:</strong> mismo día\n• <strong>Servicio Express:</strong> tiempo garantizado\n\n¿Necesitas una entrega urgente?`
+  },
+  {
+    keys: ['hola','buenas','buenos','hey','hi','saludos','buen dia','buen día'],
+    reply: `👋 ¡Hola! Bienvenido a <strong>Logística del Caribe</strong>.\n\nSoy CaribBot, tu asistente virtual. Puedo ayudarte con precios, servicios, cotizaciones y más.\n\n¿En qué te puedo ayudar hoy?`
+  },
+  {
+    keys: ['gracias','thank','perfecto','excelente','genial','ok','listo'],
+    reply: `😊 ¡Con gusto! Estamos para servirte.\n\nSi necesitas algo más, aquí estaré. También puedes <a href="#quoteCard">cotizar ahora</a> o escribirnos por WhatsApp para atención personalizada.`
+  },
+];
+
+const FALLBACK = [
+  `No estoy seguro de entender tu pregunta 🤔\n\nPuedo ayudarte con: <strong>precios, servicios, cotizaciones, ubicación, horarios</strong> o rastreo de carga.\n\n¿O prefieres hablar con una persona? <a class="wa-chat-link">Escríbenos por WhatsApp</a>`,
+  `Hmm, esa pregunta es mejor respondida por nuestro equipo 😊\n\nEscríbenos directamente por <a class="wa-chat-link">WhatsApp</a> y te atendemos al instante.`,
+  `No tengo esa información exacta, pero nuestro equipo sí la tiene.\n\n👉 <a class="wa-chat-link">Contactar por WhatsApp</a>`,
+];
+
+let fallbackIdx = 0;
+let chatOpen = false;
+let chatInitialized = false;
+
+function getBotReply(text) {
+  const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  for (const r of BOT_RESPONSES) {
+    if (r.keys.some(k => lower.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g, '')))) {
+      return r.reply;
+    }
+  }
+  const fb = FALLBACK[fallbackIdx % FALLBACK.length];
+  fallbackIdx++;
+  return fb;
+}
+
+function chatNow() {
+  const msgs = document.getElementById('chatMessages');
+  const now = new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' });
+
+  // Bot bubble
+  const wrap = document.createElement('div');
+  wrap.style.display = 'flex'; wrap.style.flexDirection = 'column';
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble bot';
+  bubble.innerHTML = text;
+  const time = document.createElement('span');
+  time.className = 'chat-time'; time.textContent = now;
+  wrap.appendChild(bubble); wrap.appendChild(time);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addMessage(text, type) {
+  const msgs = document.getElementById('chatMessages');
+  const now = new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' });
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;';
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble ' + type;
+  bubble.innerHTML = text;
+  const time = document.createElement('span');
+  time.className = 'chat-time' + (type === 'user' ? ' right' : '');
+  time.textContent = now;
+  wrap.appendChild(bubble); wrap.appendChild(time);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // Inject WA links in fallback
+  wrap.querySelectorAll('.wa-chat-link').forEach(a => {
+    a.href = _waMsg('Hola, tengo una pregunta');
+    a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.style.cssText = 'color:var(--orange);font-weight:600;text-decoration:underline;cursor:pointer;';
+  });
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const typing = document.createElement('div');
+  typing.className = 'chat-typing'; typing.id = 'chatTyping';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  document.getElementById('chatTyping')?.remove();
+}
+
+function sendMessage(text) {
+  if (!text.trim()) return;
+  addMessage(text, 'user');
+  document.getElementById('chatInput').value = '';
+  showTyping();
+  const delay = 800 + Math.random() * 600;
+  setTimeout(() => {
+    removeTyping();
+    addMessage(getBotReply(text), 'bot');
+  }, delay);
+}
+
+function initChat() {
+  if (chatInitialized) return;
+  chatInitialized = true;
+  setTimeout(() => {
+    addMessage('👋 ¡Hola! Soy <strong>CaribBot</strong>, el asistente de Logística del Caribe.\n\n¿En qué puedo ayudarte hoy?', 'bot');
+  }, 400);
+}
+
 function toggleChat() {
   const box = document.getElementById('chatBox');
-  box.classList.toggle('open');
-  if (box.classList.contains('open')) document.querySelector('.chat-badge').style.display = 'none';
+  const badge = document.getElementById('chatBadge');
+  chatOpen = !chatOpen;
+  box.classList.toggle('open', chatOpen);
+  if (chatOpen) {
+    badge.style.display = 'none';
+    initChat();
+    setTimeout(() => document.getElementById('chatInput')?.focus(), 300);
+  }
 }
 
 // ===== EXIT POPUP =====

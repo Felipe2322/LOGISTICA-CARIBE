@@ -530,31 +530,31 @@
     <span class="wa-tooltip">¡Escríbenos!</span>
   </a>
 
-  <!-- CHAT WIDGET -->
+  <!-- CHATBOT -->
   <div class="chat-widget" id="chatWidget">
-    <button class="chat-toggle" id="chatToggle">
-      <i class="fas fa-comment-dots"></i>
-      <span class="chat-badge">1</span>
+    <button class="chat-toggle" id="chatToggle" aria-label="Abrir chat">
+      <i class="fas fa-comment-dots" id="chatIcon"></i>
+      <span class="chat-badge" id="chatBadge">1</span>
     </button>
     <div class="chat-box" id="chatBox">
       <div class="chat-header">
-        <div class="chat-avatar"><i class="fas fa-headset"></i></div>
-        <div>
-          <strong>Soporte Logística del Caribe</strong>
-          <span><i class="fas fa-circle"></i> En línea ahora</span>
+        <div class="chat-avatar"><span>🚛</span></div>
+        <div class="chat-header-info">
+          <strong>CaribBot</strong>
+          <span><i class="fas fa-circle"></i> En línea · responde al instante</span>
         </div>
-        <button class="chat-close"><i class="fas fa-times"></i></button>
+        <button class="chat-close" id="chatClose" aria-label="Cerrar"><i class="fas fa-times"></i></button>
       </div>
-      <div class="chat-messages">
-        <div class="chat-msg">
-          <p>👋 ¡Hola! ¿En qué podemos ayudarte hoy?</p>
-          <span>Ahora mismo</span>
-        </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button data-msg="¿Cuánto cuesta un flete?">💰 ¿Cuánto cuesta?</button>
+        <button data-msg="¿Qué servicios ofrecen?">📦 Servicios</button>
+        <button data-msg="¿Cómo cotizo?">📋 Cotizar</button>
+        <button data-msg="¿Dónde están ubicados?">📍 Ubicación</button>
       </div>
-      <div class="chat-options">
-        <a href="#" class="chat-opt-cotizar">💬 Quiero cotizar</a>
-        <a href="#" class="chat-opt-estado">📦 Estado de mi carga</a>
-        <a href="#" class="chat-opt-pregunta">❓ Tengo una pregunta</a>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." autocomplete="off" maxlength="200"/>
+        <button id="chatSend" aria-label="Enviar"><i class="fas fa-paper-plane"></i></button>
       </div>
     </div>
   </div>
