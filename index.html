@@ -78,22 +78,39 @@
     </div>
   </div>
 
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <span><i class="fas fa-clock"></i> Lun–Sáb 7am–8pm · Servicio 24/7</span>
+      <div class="topbar-right">
+        <a href="tel:8090000000"><i class="fas fa-phone"></i> 809-000-0000</a>
+        <span class="topbar-sep">|</span>
+        <a href="#" id="topbarWa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="container nav-inner">
       <div class="logo">
-        <i class="fas fa-truck-fast"></i>
-        <span>Logística <strong>del Caribe</strong></span>
+        <div class="logo-icon"><i class="fas fa-truck-fast"></i></div>
+        <div class="logo-text">
+          <span>Logística <strong>del Caribe</strong></span>
+          <small>Santiago, República Dominicana</small>
+        </div>
+      </div>
+      <div class="nav-links-center">
+        <a href="#servicios-section">Servicios</a>
+        <a href="#precios-section">Precios</a>
+        <a href="#faq-section">FAQ</a>
       </div>
       <div class="nav-right">
-        <a href="tel:8090000000" class="nav-phone">
-          <i class="fas fa-phone"></i> 809-000-0000
-        </a>
         <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
           <i class="fas fa-moon" id="themeIcon"></i>
         </button>
-        <a href="#" class="btn-wa" id="navWa" aria-label="WhatsApp">
-          <i class="fab fa-whatsapp"></i> WhatsApp
+        <a href="#quoteCard" class="btn-cotizar-nav">
+          <i class="fas fa-file-invoice-dollar"></i> Cotizar gratis
         </a>
       </div>
     </div>
@@ -107,18 +124,26 @@
       <div class="hero-overlay-dark"></div>
       <div class="hero-left-inner">
         <span class="badge-top"><i class="fas fa-map-marker-alt"></i> Santiago, República Dominicana</span>
-        <h1>Transporte de<br/><span>Carga Confiable</span></h1>
-        <p>Cotiza en 30 segundos. Te respondemos en menos de 2 horas.</p>
+        <h1>Tu carga llega<br/><span>segura y a tiempo</span></h1>
+        <p>Somos la empresa de transporte de confianza del Cibao. Cotiza en 30 segundos y te respondemos en menos de 2 horas.</p>
         <ul class="trust-list">
           <li><i class="fas fa-check"></i> Flota moderna con GPS en tiempo real</li>
           <li><i class="fas fa-check"></i> Carga 100% asegurada</li>
           <li><i class="fas fa-check"></i> Conductores certificados</li>
           <li><i class="fas fa-check"></i> Servicio disponible 24/7</li>
         </ul>
+        <div class="hero-ctas">
+          <a href="#quoteCard" class="btn-hero-primary">
+            <i class="fas fa-file-invoice-dollar"></i> Cotizar gratis ahora
+          </a>
+          <a href="tel:8090000000" class="btn-hero-secondary">
+            <i class="fas fa-phone"></i> 809-000-0000
+          </a>
+        </div>
         <div class="hero-stats">
           <div class="stat"><strong class="counter" data-target="500">0</strong><span>Clientes</span></div>
           <div class="divider"></div>
-          <div class="stat"><strong class="counter" data-target="10">0</strong><span>Años</span></div>
+          <div class="stat"><strong class="counter" data-target="10">0</strong><span>Años exp.</span></div>
           <div class="divider"></div>
           <div class="stat"><strong>24/7</strong><span>Disponible</span></div>
         </div>
@@ -141,96 +166,128 @@
     <div class="hero-right">
       <div class="quote-card" id="quoteCard">
         <div class="quote-header">
-          <h2><i class="fas fa-file-invoice-dollar"></i> Cotiza Ahora</h2>
-          <p>Gratis · Sin compromiso · Respuesta rápida</p>
+          <div class="quote-header-top">
+            <div class="quote-avatar">🚛</div>
+            <div>
+              <h2>Cotiza tu flete</h2>
+              <p>Gratis · Sin compromiso · Respuesta en 2 hrs</p>
+            </div>
+          </div>
           <div class="urgency-bar">
             <i class="fas fa-clock"></i>
-            <span>Respuesta garantizada en: <strong id="countdown">01:59:59</strong></span>
+            <span>Respondemos en: <strong id="countdown">01:59:59</strong></span>
           </div>
         </div>
+
+        <!-- STEP PROGRESS -->
+        <div class="step-progress">
+          <div class="sp-step active" id="sp1">
+            <div class="sp-dot"><i class="fas fa-user"></i></div>
+            <span>Tus datos</span>
+          </div>
+          <div class="sp-line"></div>
+          <div class="sp-step" id="sp2">
+            <div class="sp-dot"><i class="fas fa-truck"></i></div>
+            <span>Tu carga</span>
+          </div>
+          <div class="sp-line"></div>
+          <div class="sp-step" id="sp3">
+            <div class="sp-dot"><i class="fas fa-check"></i></div>
+            <span>Detalles</span>
+          </div>
+        </div>
+
         <form id="quoteForm">
           <!-- STEP 1 -->
           <div class="step active" id="step1">
-            <div class="step-label"><span class="step-dot active"></span><span class="step-dot"></span><span class="step-dot"></span> Paso 1 de 3 — Tu información</div>
             <div class="form-group">
               <label><i class="fas fa-user"></i> Nombre completo</label>
               <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required />
             </div>
             <div class="form-group">
               <label><i class="fas fa-phone"></i> Teléfono / WhatsApp</label>
-              <input type="tel" id="telefono" placeholder="809-000-0000" required />
+              <div class="input-with-flag">
+                <span class="input-flag">🇩🇴 +1</span>
+                <input type="tel" id="telefono" placeholder="809-000-0000" required />
+              </div>
             </div>
             <div class="form-group">
-              <label><i class="fas fa-envelope"></i> Correo (opcional)</label>
+              <label><i class="fas fa-envelope"></i> Correo <span class="label-opt">(opcional)</span></label>
               <input type="email" id="email" placeholder="tu@correo.com" />
             </div>
-            <button type="button" class="btn-next" id="btnNext1">Continuar <i class="fas fa-arrow-right"></i></button>
+            <button type="button" class="btn-next" id="btnNext1">Siguiente paso <i class="fas fa-arrow-right"></i></button>
           </div>
 
           <!-- STEP 2 -->
           <div class="step" id="step2">
-            <div class="step-label"><span class="step-dot done"></span><span class="step-dot active"></span><span class="step-dot"></span> Paso 2 de 3 — Tu carga</div>
-            <div class="form-group">
-              <label><i class="fas fa-location-dot"></i> Origen</label>
-              <input type="text" id="origen" placeholder="¿Desde dónde?" required />
+            <div class="route-row">
+              <div class="form-group">
+                <label><i class="fas fa-location-dot"></i> Origen</label>
+                <input type="text" id="origen" placeholder="¿Desde dónde?" required />
+              </div>
+              <div class="route-arrow"><i class="fas fa-arrow-right"></i></div>
+              <div class="form-group">
+                <label><i class="fas fa-flag-checkered"></i> Destino</label>
+                <input type="text" id="destino" placeholder="¿Hacia dónde?" required />
+              </div>
             </div>
             <div class="form-group">
-              <label><i class="fas fa-flag-checkered"></i> Destino</label>
-              <input type="text" id="destino" placeholder="¿Hacia dónde?" required />
-            </div>
-            <div class="form-group">
-              <label><i class="fas fa-boxes-stacked"></i> Tipo de servicio</label>
+              <label><i class="fas fa-boxes-stacked"></i> ¿Qué tipo de servicio necesitas?</label>
               <div class="service-options">
-                <label class="service-opt"><input type="radio" name="servicio" value="Carga General"/><span><i class="fas fa-box"></i> Carga General</span></label>
-                <label class="service-opt"><input type="radio" name="servicio" value="Mudanza"/><span><i class="fas fa-house"></i> Mudanza</span></label>
-                <label class="service-opt"><input type="radio" name="servicio" value="Carga Industrial"/><span><i class="fas fa-industry"></i> Industrial</span></label>
-                <label class="service-opt"><input type="radio" name="servicio" value="Express"/><span><i class="fas fa-bolt"></i> Express</span></label>
+                <label class="service-opt"><input type="radio" name="servicio" value="Carga General"/><span><i class="fas fa-box"></i><strong>Carga General</strong><small>Mercancías y paquetes</small></span></label>
+                <label class="service-opt"><input type="radio" name="servicio" value="Mudanza"/><span><i class="fas fa-house"></i><strong>Mudanza</strong><small>Residencial o comercial</small></span></label>
+                <label class="service-opt"><input type="radio" name="servicio" value="Carga Industrial"/><span><i class="fas fa-industry"></i><strong>Industrial</strong><small>Maquinaria pesada</small></span></label>
+                <label class="service-opt"><input type="radio" name="servicio" value="Express"/><span><i class="fas fa-bolt"></i><strong>Express</strong><small>Entrega urgente</small></span></label>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="btn-back" id="btnBack2"><i class="fas fa-arrow-left"></i></button>
-              <button type="button" class="btn-next" id="btnNext2">Continuar <i class="fas fa-arrow-right"></i></button>
+              <button type="button" class="btn-back" id="btnBack2"><i class="fas fa-arrow-left"></i> Atrás</button>
+              <button type="button" class="btn-next" id="btnNext2">Siguiente <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
 
           <!-- STEP 3 -->
           <div class="step" id="step3">
-            <div class="step-label"><span class="step-dot done"></span><span class="step-dot done"></span><span class="step-dot active"></span> Paso 3 de 3 — Detalles</div>
-            <div class="form-group">
-              <label><i class="fas fa-weight-hanging"></i> Peso aproximado</label>
-              <select id="peso">
-                <option value="">Selecciona...</option>
-                <option>Menos de 500 kg</option>
-                <option>500 kg – 2 toneladas</option>
-                <option>2 – 10 toneladas</option>
-                <option>Más de 10 toneladas</option>
-              </select>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label><i class="fas fa-weight-hanging"></i> Peso aproximado</label>
+                <select id="peso">
+                  <option value="">Selecciona...</option>
+                  <option>Menos de 500 kg</option>
+                  <option>500 kg – 2 toneladas</option>
+                  <option>2 – 10 toneladas</option>
+                  <option>Más de 10 toneladas</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Fecha estimada</label>
+                <input type="date" id="fecha" />
+              </div>
             </div>
             <div class="form-group">
-              <label><i class="fas fa-calendar"></i> Fecha estimada</label>
-              <input type="date" id="fecha" />
-            </div>
-            <div class="form-group">
-              <label><i class="fas fa-comment"></i> Descripción adicional</label>
+              <label><i class="fas fa-comment"></i> Descripción <span class="label-opt">(opcional)</span></label>
               <textarea id="descripcion" placeholder="Cuéntanos más sobre tu carga..." rows="3"></textarea>
             </div>
-            <!-- HONEYPOT: campo invisible para bots -->
+            <!-- HONEYPOT -->
             <div class="hp-field" aria-hidden="true">
               <input type="text" id="hp_name" name="hp_name" tabindex="-1" autocomplete="off"/>
             </div>
             <div class="btn-row">
-              <button type="button" class="btn-back" id="btnBack3"><i class="fas fa-arrow-left"></i></button>
+              <button type="button" class="btn-back" id="btnBack3"><i class="fas fa-arrow-left"></i> Atrás</button>
               <button type="submit" class="btn-submit"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
             </div>
           </div>
         </form>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+        <div class="quote-footer-note">
+          <i class="fas fa-lock"></i> Tus datos están seguros. No compartimos tu información.
+        </div>
       </div>
 
       <!-- SUCCESS -->
       <div class="success-card" id="successCard">
         <div class="success-icon"><i class="fas fa-circle-check"></i></div>
-        <h2>¡Solicitud enviada!</h2>
+        <h2>¡Listo, recibimos tu solicitud!</h2>
         <p>Abrimos WhatsApp con tu cotización lista. Te respondemos en <strong>menos de 2 horas</strong>.</p>
         <a href="#" class="btn-wa-big" id="waLink" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Abrir WhatsApp ahora</a>
         <button class="btn-reset" id="btnReset">Enviar otra cotización</button>
@@ -260,7 +317,7 @@
   </section>
 
   <!-- SERVICIOS -->
-  <section class="servicios reveal-section">
+  <section class="servicios reveal-section" id="servicios-section">
     <div class="container">
       <div class="sec-header">
         <span class="tag">Servicios</span>
@@ -367,7 +424,7 @@
   </section>
 
   <!-- PRECIOS -->
-  <section class="precios reveal-section">
+  <section class="precios reveal-section" id="precios-section">
     <div class="container">
       <div class="sec-header">
         <span class="tag">Tarifas orientativas</span>
@@ -430,7 +487,7 @@
   </section>
 
   <!-- FAQ -->
-  <section class="faq reveal-section">
+  <section class="faq reveal-section" id="faq-section">
     <div class="container">
       <div class="sec-header">
         <span class="tag">FAQ</span>
@@ -466,6 +523,38 @@
             ¿Puedo rastrear mi carga en tiempo real? <i class="fas fa-chevron-down"></i>
           </button>
           <div class="faq-a">Sí. Toda nuestra flota cuenta con GPS. Te enviamos actualizaciones por WhatsApp durante el trayecto.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO RÁPIDO -->
+  <section class="contacto-rapido reveal-section">
+    <div class="container">
+      <div class="contacto-grid">
+        <div class="contacto-card reveal">
+          <div class="contacto-icon" style="background:rgba(37,211,102,0.12)"><i class="fab fa-whatsapp" style="color:#25D366"></i></div>
+          <div class="contacto-info">
+            <strong>WhatsApp</strong>
+            <span>Respuesta casi inmediata</span>
+          </div>
+          <a href="#" id="ctaWa" class="contacto-btn wa-btn">Escribir ahora</a>
+        </div>
+        <div class="contacto-card reveal">
+          <div class="contacto-icon" style="background:rgba(15,45,94,0.1)"><i class="fas fa-phone" style="color:var(--blue)"></i></div>
+          <div class="contacto-info">
+            <strong>Llamar directo</strong>
+            <span>809-000-0000</span>
+          </div>
+          <a href="tel:8090000000" class="contacto-btn call-btn">Llamar ahora</a>
+        </div>
+        <div class="contacto-card reveal">
+          <div class="contacto-icon" style="background:rgba(249,115,22,0.1)"><i class="fas fa-file-invoice-dollar" style="color:var(--orange)"></i></div>
+          <div class="contacto-info">
+            <strong>Cotización gratis</strong>
+            <span>Respuesta en 2 horas</span>
+          </div>
+          <a href="#quoteCard" class="contacto-btn quote-btn">Cotizar gratis</a>
         </div>
       </div>
     </div>

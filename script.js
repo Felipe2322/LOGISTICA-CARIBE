@@ -43,8 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) return;
     el.href = _waMsg(msg); el.target = '_blank'; el.rel = 'noopener noreferrer';
   };
-  setWa('navWa',   cotizarMsg);
-  setWa('waFloat', cotizarMsg);
+  setWa('topbarWa', cotizarMsg);
+  setWa('ctaWa',    cotizarMsg);
+  setWa('waFloat',  cotizarMsg);
   setWa('footerWa', cotizarMsg);
   setWa('stickyWa', cotizarMsg);
 
@@ -144,7 +145,15 @@ startCountdown(7199);
 function showStep(n) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   document.getElementById('step' + n)?.classList.add('active');
-  document.getElementById('progressFill').style.width = ((n / 3) * 100) + '%';
+
+  // Actualizar step progress visual
+  [1, 2, 3].forEach(i => {
+    const sp = document.getElementById('sp' + i);
+    if (!sp) return;
+    sp.classList.remove('active', 'done');
+    if (i < n) sp.classList.add('done');
+    else if (i === n) sp.classList.add('active');
+  });
 }
 
 function nextStep(from) {
