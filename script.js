@@ -116,6 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Init form
   showStep(1);
+
+  // --- FECHA MÍNIMA: hoy ---
+  const fechaInput = document.getElementById('fecha');
+  if (fechaInput) {
+    const today = new Date().toISOString().split('T')[0];
+    fechaInput.min = today;
+  }
 });
 
 // ===== COUNTDOWN =====
@@ -153,6 +160,18 @@ function nextStep(from) {
       }
     }
   });
+  // Validar email si fue ingresado (opcional pero debe ser válido)
+  if (from === 1) {
+    const emailInput = document.getElementById('email');
+    if (emailInput && emailInput.value.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailInput.value.trim())) {
+        emailInput.style.borderColor = '#EF4444';
+        showEmailError(emailInput);
+        valid = false;
+      }
+    }
+  }
   if (from === 2) {
     const radio = document.querySelector('input[name="servicio"]:checked');
     const opts  = document.querySelector('.service-options');
@@ -172,6 +191,18 @@ function showTelError(input) {
     input.parentElement.appendChild(err);
   }
   err.textContent = 'Número válido: 809, 829 o 849 + 7 dígitos';
+  input.addEventListener('input', () => { err.remove(); input.style.borderColor = ''; }, { once: true });
+}
+
+function showEmailError(input) {
+  let err = input.parentElement.querySelector('.email-error');
+  if (!err) {
+    err = document.createElement('span');
+    err.className = 'email-error';
+    err.style.cssText = 'color:#EF4444;font-size:0.75rem;margin-top:4px;display:block;';
+    input.parentElement.appendChild(err);
+  }
+  err.textContent = 'Ingresa un correo válido (ej: tu@correo.com)';
   input.addEventListener('input', () => { err.remove(); input.style.borderColor = ''; }, { once: true });
 }
 
@@ -346,22 +377,6 @@ function getBotReply(text) {
   return fb;
 }
 
-function chatNow() {
-  const msgs = document.getElementById('chatMessages');
-  const now = new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' });
-
-  // Bot bubble
-  const wrap = document.createElement('div');
-  wrap.style.display = 'flex'; wrap.style.flexDirection = 'column';
-  const bubble = document.createElement('div');
-  bubble.className = 'chat-bubble bot';
-  bubble.innerHTML = text;
-  const time = document.createElement('span');
-  time.className = 'chat-time'; time.textContent = now;
-  wrap.appendChild(bubble); wrap.appendChild(time);
-  msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
-}
 
 function addMessage(text, type) {
   const msgs = document.getElementById('chatMessages');
@@ -510,7 +525,11 @@ document.querySelectorAll('section[id]').forEach(s => spyObserver.observe(s));
 
 // ===== PRELOADER =====
 window.addEventListener('load', () => {
-  setTimeout(() => document.getElementById('preloader')?.classList.add('hidden'), 1500);
+  const hide = () => document.getElementById('preloader')?.classList.add('hidden');
+  // Mínimo 800ms para que no parpadee, pero no más de lo necesario
+  const elapsed = Date.now() - performance.timing.navigationStart;
+  const remaining = Math.max(0, 800 - elapsed);
+  setTimeout(hide, remaining);
 });
 
 // ===== SHAKE KEYFRAME =====
